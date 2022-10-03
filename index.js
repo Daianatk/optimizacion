@@ -22,10 +22,9 @@ let btnCerrarModal;
 let modal;
 
 class Producto {
-    constructor(cliente, telefono, id, nombre, cantidad, precio) {
-        this.cliente = cliente;
-        this.telefono = telefono;
+    constructor(id, telefono, nombre, cantidad, precio) {
         this.id = id;
+        this.telefono = telefono;
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precio = precio;
@@ -51,8 +50,8 @@ function inicializarElementos() {
     inputPrecioProducto = document.getElementById("inputPrecioProducto");
     contenedorProductos = document.getElementById("contenedorProductos");
     btnCerrarModal = document.getElementById("btnCerrarModal");
-    modalCotizarProducto = document.getElementById("modalCotizarProducto");
     agregarProducto = document.getElementById("agregarProducto");
+    modalCotizarProducto = document.getElementById("modalCotizarProducto")
     modal = new bootstrap.Modal(modalCotizarProducto);
 }
 
@@ -61,23 +60,16 @@ function inicializarEventos() {
     formularioIdentificacion.onsubmit = (event) => identificarUsuario(event);
     limpiarStorage.onclick = eliminarStorage;
     agregarProducto.onclick = abrirModalCotizarProducto;
-
-    for (const boton of btnCerrarModal) {
-        boton.onclick = cerrarModalCotizarProducto;
-    }
+    btnCerrarModal.onclick = cerrarModalCotizarProducto
 }
 
 function abrirModalCotizarProducto() {
-    if (usuario) {
-        modal.show();
-    } else {
-        alert("Identifíquese antes de agregar una nueva cotización");
-    }
+    usuario ? modal.show() : alert("Identifíquese antes de agregar una nueva cotización")
 }
 
 function cerrarModalCotizarProducto() {
-    formularioCotizador.reset();
-    modal.hide();
+    formularioCotizador.reset()
+    modal.hide()
 }
 
 function eliminarStorage() {
@@ -111,9 +103,8 @@ function mostrarFormularioIdentificacion() {
 function validarFormulario(event) {
     event.preventDefault();
     if (usuario) {
-        let cliente = inputClienteProducto.value;
-        let telefono = inputTelefonoProducto.value;
         let id = inputIdClienteProducto.value;
+        let telefono = inputTelefonoProducto.value;
         let nombre = inputNombreProducto.value;
         let cantidad = parseInt(inputCantidadProducto.value);
         let precio = parseFloat(inputPrecioProducto.value);
@@ -121,9 +112,8 @@ function validarFormulario(event) {
         const idExiste = productos.some((producto) => producto.id === id);
         if (!idExiste) {
             let producto = new Producto(
-                cliente,
-                telefono,
                 id,
+                telefono,
                 nombre,
                 cantidad,
                 precio
@@ -131,12 +121,13 @@ function validarFormulario(event) {
 
             productos.push(producto);
             formularioCotizador.reset();
-            alert("Cotización agregada exitosamente");
             actualizarProductosStorage();
             pintarProductos();
         } else {
             alert("El ID ya existe, por favor ingrese uno diferente");
         }
+    } else {
+        alert("Identifiquese antes de agregar un producto");
     }
 }
 
@@ -155,7 +146,7 @@ function pintarProductos() {
     contenedorProductos.innerHTML = "";
     productos.forEach((producto) => {
         let column = document.createElement("div");
-        column.className = "col-md-4 mt-3";
+        column.className = "col-md-3 mt-3";
         column.id = `columna-${producto.id}`;
         column.innerHTML = `
             <div class="card">
@@ -210,10 +201,7 @@ function obtenerProductosStorage() {
 
 function obtenerUsuarioStorage() {
     let usuarioAlmacenado = localStorage.getItem("usuario");
-    if (usuarioAlmacenado) {
-        usuario = usuarioAlmacenado;
-        mostrarTextoUsuario();
-    }
+    usuarioAlmacenado = usuario && mostrarTextoUsuario()
 }
 
 function main() {
